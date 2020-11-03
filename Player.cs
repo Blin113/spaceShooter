@@ -9,55 +9,72 @@ using System.Threading.Tasks;
 
 namespace Template
 {
-    class Player
+    class Player : BaseClass
     {
-        Texture2D ship;
-        Vector2 shipPos = new Vector2(100, 100);
+        List<Vector2> beam;
 
-        Texture2D laser;
+        KeyboardState oldKState;
 
-        public Player(Texture2D ship, Vector2 shipPos, Texture2D laser)
+        public Player(Texture2D texture, Vector2 texturePos, List<Vector2> beams) : base(texture, texturePos)
         {
-            this.ship = ship;
-            this.laser = laser;
-            this.shipPos = shipPos;
+            beam = beams;
         }
 
-        public void Update()
+        public override void Update()
         {
             KeyboardState kstate = Keyboard.GetState();
 
             if (kstate.IsKeyDown(Keys.W))
             {
-                shipPos.Y -= 3;
+                texturePos.Y -= 4;
             }
             if (kstate.IsKeyDown(Keys.A))
             {
-                shipPos.X -= 3;
+                texturePos.X -= 4;
             }
             if (kstate.IsKeyDown(Keys.S))
             {
-                shipPos.Y += 3;
+                texturePos.Y += 4;
             }
             if (kstate.IsKeyDown(Keys.D))
             {
-                shipPos.X += 3;
+                texturePos.X += 4;
             }
 
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if (texturePos.X <= 0)
+            {
+                texturePos.X = 0;
+            }
+            if (texturePos.X >= 700)
+            {
+                texturePos.X = 700;
+            }
+            if (texturePos.Y <= 0)
+            {
+                texturePos.Y = 0;
+            }
+            if (texturePos.Y >= 380)
+            {
+                texturePos.Y = 380;
+            }
+
+
+            if (kstate.IsKeyDown(Keys.Space) && oldKState.IsKeyUp(Keys.Space))
             {
                 Shoot();
             }
+
+            oldKState = kstate;
         }
 
         public void Shoot()
         {
-
+            beam.Add(texturePos + new Vector2(30, 0));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ship, new Rectangle((int)shipPos.X, (int)shipPos.Y, 50, 50), Color.White);
+            spriteBatch.Draw(texture, new Rectangle((int)texturePos.X, (int)texturePos.Y, 100, 100), Color.White);
         }
     }
 }

@@ -14,12 +14,18 @@ namespace Template
         SpriteBatch spriteBatch;
 
         Texture2D space;
-        Texture2D eShip;
+        
 
         Player player;
         Texture2D ship;
-        Vector2 shipPos;
+        Vector2 shipPos = new Vector2(350, 320);
         Texture2D laser;
+
+        List<Vector2> beams = new List<Vector2>();
+
+        Enemy enemy;
+        Texture2D eShip;
+        Vector2 eShipPos;
 
         //KOmentar
         public Game1()
@@ -57,7 +63,8 @@ namespace Template
             eShip = Content.Load<Texture2D>("enemy ship");
             laser = Content.Load<Texture2D>("Laser");
 
-            player = new Player(ship, shipPos, laser);
+            player = new Player(ship, shipPos, beams);
+            enemy = new Enemy(eShip, eShipPos);
             // TODO: use this.Content to load your game content here 
         }
 
@@ -83,6 +90,13 @@ namespace Template
             // TODO: Add your update logic here
 
             player.Update();
+            enemy.Update();
+
+            for(int i = 0; i < beams.Count; i++)
+            {
+                beams[i] = beams[i] - new Vector2(0, 7);
+            }
+
             base.Update(gameTime);
         }
 
@@ -101,6 +115,14 @@ namespace Template
             spriteBatch.Draw(space, new Rectangle(0,0,800,480), Color.White);
 
             player.Draw(spriteBatch);
+
+            foreach(Vector2 beams in beams)
+            {
+                Rectangle rec = new Rectangle();
+                rec.Location = beams.ToPoint();
+                rec.Size = new Point(40, 40);
+                spriteBatch.Draw(laser, rec, Color.White);
+            }
 
             spriteBatch.End();
 
