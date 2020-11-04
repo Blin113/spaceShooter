@@ -27,6 +27,7 @@ namespace Template
         Enemy enemy;
         Texture2D eShip;
         Vector2 eShipPos;
+        Rectangle enemyRectangle;
         List<Enemy> enemies = new List<Enemy>();
         Random rnd = new Random();
 
@@ -67,7 +68,7 @@ namespace Template
             laser = Content.Load<Texture2D>("Laser");
 
             player = new Player(ship, shipPos, beams);
-            enemy = new Enemy(eShip, eShipPos);
+            enemy = new Enemy(eShip, eShipPos, enemyRectangle);
             // TODO: use this.Content to load your game content here 
         }
 
@@ -106,11 +107,27 @@ namespace Template
                 }
             }
 
-            if(rnd.Next(100) < 10)
+            if(rnd.Next(100) < 1)
             {
-                enemies.Add(new Enemy(eShip, eShipPos));
+                eShipPos.X = rnd.Next(0, 700);
+                enemyRectangle = new Rectangle((int)eShipPos.X, (int)eShipPos.Y, 100, 100);
+                enemies.Add(new Enemy(eShip, eShipPos, enemyRectangle));
             }
+            
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if(enemyRectangle.Location.Y < 480)
+                {
+                    enemyRectangle.Location.Y = eShipPos.ToPoint();
+                }
 
+                if (eShipPos.Y > 480)
+                {
+                    enemies.Remove(enemies[i]);
+                    i--;
+                }
+            }
+            
             base.Update(gameTime);
         }
 
@@ -126,9 +143,10 @@ namespace Template
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(space, new Rectangle(0,0,800,480), Color.White);
+            spriteBatch.Draw(space, new Rectangle(0, 0, 800, 480), Color.White);
 
             player.Draw(spriteBatch);
+
             foreach (var item in enemies)
             {
                 item.Draw(spriteBatch);

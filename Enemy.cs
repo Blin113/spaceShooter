@@ -12,9 +12,9 @@ namespace Template
     {
         private Rectangle enemyRectangle;
 
-        public Enemy(Texture2D texture, Vector2 texturePos) :base(texture, texturePos)
+        public Enemy(Texture2D texture, Vector2 texturePos, Rectangle enemyRectangle) :base(texture, texturePos)
         {
-
+            this.enemyRectangle = enemyRectangle;
         }
 
         public override void Update() { }
