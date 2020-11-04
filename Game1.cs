@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,6 +27,8 @@ namespace Template
         Enemy enemy;
         Texture2D eShip;
         Vector2 eShipPos;
+        List<Enemy> enemies = new List<Enemy>();
+        Random rnd = new Random();
 
         //KOmentar
         public Game1()
@@ -92,9 +95,20 @@ namespace Template
             player.Update();
             enemy.Update();
 
-            for(int i = 0; i < beams.Count; i++)
+            for (int i = 0; i < beams.Count; i++)
             {
                 beams[i] = beams[i] - new Vector2(0, 7);
+
+                if (beams[i].Y < -50)
+                {
+                    beams.Remove(beams[i]);
+                    i--;
+                }
+            }
+
+            if(rnd.Next(100) < 10)
+            {
+                enemies.Add(new Enemy(eShip, eShipPos));
             }
 
             base.Update(gameTime);
@@ -115,6 +129,10 @@ namespace Template
             spriteBatch.Draw(space, new Rectangle(0,0,800,480), Color.White);
 
             player.Draw(spriteBatch);
+            foreach (var item in enemies)
+            {
+                item.Draw(spriteBatch);
+            }
 
             foreach(Vector2 beams in beams)
             {
